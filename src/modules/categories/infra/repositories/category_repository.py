@@ -2,13 +2,14 @@ from typing import TYPE_CHECKING, List
 
 from sqlalchemy import select, exists, update, delete
 
+from modules.categories.domain.interfaces.category_repository_interface import ICategoryRepository
 from modules.categories.infra.orms import Category
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
 
-class CategoryRepository:
+class CategoryRepository(ICategoryRepository[Category]):
     model: Category = Category
 
     def __init__(self, session: "AsyncSession") -> None:
