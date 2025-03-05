@@ -5,5 +5,5 @@ ID = TypeVar("ID")
 
 
 @dataclass(frozen=True)
-class Base(Generic[ID]):
+class BaseEntity(Generic[ID]):
     id: ID
