@@ -6,6 +6,8 @@ from modules.categories.domain.value_objects import Title
 
 
 class Category(BaseModel):
+    __tablename__ = 'categories'
+
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(unique=True, nullable=False)
 
@@ -21,3 +23,9 @@ class Category(BaseModel):
             id=entity.id,
             title=entity.title.value,
         )
+
+    def __str__(self):
+        return f"Category(id={self.id}, title={self.title})"
+
+    def __repr__(self):
+        return f"Category(id={self.id}, title='{self.title}')"
