@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 
-from modules.base import Base
+from modules.base import BaseEntity
 from modules.categories.domain.value_objects import Title
 
 
 @dataclass(frozen=True)
-class Category(Base[int]):
+class CategoryEntity(BaseEntity[int]):
     title: Title
 
     def __str__(self) -> str:
-        return f"Category(id={self.id}, title={self.title})"
+        return f"CategoryEntity(id={self.id}, title={self.title})"

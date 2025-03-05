@@ -1,3 +1,3 @@
-__all__ = ("Category",)
+__all__ = ("CategoryEntity",)
 
-from modules.categories.domain.entities.categories import Category
+from modules.categories.domain.entities.categories import CategoryEntity
