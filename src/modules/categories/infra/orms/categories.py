@@ -17,13 +17,6 @@ class Category(BaseModel):
             title=Title(self.title),
         )
 
-    @classmethod
-    def from_entity(cls, entity: CategoryEntity) -> CategoryEntity:
-        return cls(
-            id=entity.id,
-            title=entity.title.value,
-        )
-
     def __str__(self):
         return f"Category(id={self.id}, title={self.title})"
 
