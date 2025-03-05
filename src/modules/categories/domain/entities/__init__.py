@@ -1,5 +1,3 @@
-__all__ = (
-    "Category",
-)
+__all__ = ("Category",)
 
 from modules.categories.domain.entities.categories import Category
