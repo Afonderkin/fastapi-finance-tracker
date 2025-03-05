@@ -1,12 +1,14 @@
 from dataclasses import dataclass
 
+from modules.base import BaseValueObject
 
-@dataclass
-class Title:
-    title: str
+
+@dataclass(frozen=True)
+class Title(BaseValueObject[str]):
+    value: str
 
     def __post_init__(self) -> None:
-        self._validate_title(self.title)
+        self._validate_title(self.value)
 
     @staticmethod
     def _validate_title(title) -> None:
