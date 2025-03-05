@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 from modules.categories.domain.entities import CategoryEntity
-from modules.categories.infra.orms import Category
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
