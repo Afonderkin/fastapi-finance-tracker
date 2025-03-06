@@ -17,11 +17,11 @@ class ICategoryRepository(ABC, Generic[ModelType]):
         raise NotImplementedError()
 
     @abstractmethod
-    async def find_by_id(self, category_id: int) -> "Category" | None:
+    async def find_by_id(self, category_id: int) -> "Category | None":
         raise NotImplementedError()
 
     @abstractmethod
-    async def find_by_title(self, title: str) -> "Category" | None:
+    async def find_by_title(self, title: str) -> "Category | None":
         raise NotImplementedError()
 
     @abstractmethod
