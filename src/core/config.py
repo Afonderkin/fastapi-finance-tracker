@@ -19,6 +19,7 @@ class RunConfig(BaseModel):
 
 class ApiV1PrefixConfig(BaseModel):
     prefix: str = "/v1"
+    categories_prefix: str = "/categories"
 
 
 class ApiPrefixConfig(BaseModel):
