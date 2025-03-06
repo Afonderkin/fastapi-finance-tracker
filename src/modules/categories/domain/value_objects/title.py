@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from modules.base import BaseValueObject
 
 
-@dataclass(frozen=True)
+@dataclass
 class Title(BaseValueObject[str]):
     value: str
 

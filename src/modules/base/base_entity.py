@@ -4,6 +4,6 @@ from typing import Generic, TypeVar
 ID = TypeVar("ID")
 
 
-@dataclass(frozen=True)
+@dataclass
 class BaseEntity(Generic[ID]):
     id: ID
