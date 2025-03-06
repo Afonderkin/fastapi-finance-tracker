@@ -26,3 +26,7 @@ migrate:
 
 downgrade:
     cd src; alembic downgrade -1
+
+#uvicorn
+app-run:
+    cd src; uvicorn main:create_app --host 0.0.0.0 --port 8000 --reload
