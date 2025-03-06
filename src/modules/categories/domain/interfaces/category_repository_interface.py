@@ -29,11 +29,11 @@ class ICategoryRepository(ABC, Generic[ModelType]):
         raise NotImplementedError()
 
     @abstractmethod
-    async def save(self, title: str) -> None:
+    async def save(self, title: str) -> "Category":
         raise NotImplementedError()
 
     @abstractmethod
-    async def update(self, category_id: int, new_title: str) -> None:
+    async def update(self, category_id: int, new_title: str) -> "Category":
         raise NotImplementedError()
 
     @abstractmethod

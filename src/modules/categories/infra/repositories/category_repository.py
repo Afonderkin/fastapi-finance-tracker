@@ -35,14 +35,15 @@ class CategoryRepository(ICategoryRepository[Category]):
         result = await self.session.execute(stmt)
         return result.scalar()
 
-    async def save(self, title: str) -> None:
+    async def save(self, title: str) -> Category:
         if await self.exists_by_title(title):
             raise ValueError(f"Category with title {title} already exists.")
         new_category = self.model(title=title)
         self.session.add(new_category)
         await self.session.commit()
+        return new_category
 
-    async def update(self, category_id: int, new_title: str) -> None:
+    async def update(self, category_id: int, new_title: str) -> Category:
         stmt = (
             update(self.model)
             .where(self.model.id == category_id)
@@ -50,6 +51,8 @@ class CategoryRepository(ICategoryRepository[Category]):
         )
         await self.session.execute(stmt)
         await self.session.commit()
+        updated_category = await self.find_by_id(category_id)
+        return updated_category
 
     async def delete(self, category_id: int) -> None:
         stmt = delete(self.model).where(self.model.id == category_id)
