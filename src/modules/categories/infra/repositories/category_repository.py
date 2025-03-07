@@ -76,13 +76,16 @@ class CategoryRepository(ICategoryRepository[Category]):
             update(self.model)
             .where(self.model.id == category_id)
             .values(title=new_title)
+            .returning(self.model)
         )
-        await self.session.execute(stmt)
+        result = await self.session.execute(stmt)
         await self.session.commit()
-        updated_category = await self.find_by_id(category_id)
-        return updated_category
+        return result.scalar_one()
 
     async def delete(self, category_id: int) -> None:
+        category = await self.find_by_id(category_id)
+        if not category:
+            raise ValueError(f"Category with id {category_id} not found.")
         stmt = delete(self.model).where(self.model.id == category_id)
         await self.session.execute(stmt)
         await self.session.commit()
