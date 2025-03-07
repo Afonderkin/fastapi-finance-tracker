@@ -1,13 +1,13 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
-from fastapi import APIRouter, Depends, status, Path, Response
+from fastapi import APIRouter, Depends, status, Path, Response, Query
 
 from core.config import settings
 from modules.categories.domain.services import CategoryService
 from modules.categories.presentations.dependencies import get_category_service
 from modules.categories.presentations.schemas import (CategoryResponse, CategoryCreate,
                                                       CategoryUpdate, SuccessUpdateCategoryResponse,
-                                                      SuccessCreateCategoryResponse, )
+                                                      SuccessCreateCategoryResponse, PaginatedResponse, )
 
 router = APIRouter(
     prefix=settings.api.v1.categories_prefix,
@@ -17,7 +17,7 @@ router = APIRouter(
 
 @router.get(
     path="",
-    response_model=list[CategoryResponse],
+    response_model=PaginatedResponse,
     summary="Получение списка всех категорий",
     description="Возвращает список всех категорий",
     responses={
@@ -33,10 +33,30 @@ router = APIRouter(
     }
 )
 async def get_categories(
-    category_service: Annotated[CategoryService, Depends(get_category_service)]
-) -> list[CategoryResponse]:
-    categories = await category_service.get_all_categories()
-    return [CategoryResponse(id=category.id, title=category.title.value) for category in categories]
+    category_service: Annotated[CategoryService, Depends(get_category_service)],
+    page: int = Query(1, description="Номер страницы", ge=1),
+    size: int = Query(10, description="Количество элементов на странице", ge=1, le=10),
+    sort_by: Optional[str] = Query(None, description="Поле для сортировки"),
+    sort_order: Optional[str] = Query(None, description="Порядок сортировки (asc или desc)"),
+    filter_by: Optional[str] = Query(None, description="Фильтр по полю"),
+) -> PaginatedResponse:
+    offset = (page - 1) * size
+    categories, total = await category_service.get_all_categories(
+        offset=offset,
+        limit=size,
+        sort_by=sort_by,
+        sort_order=sort_order,
+        filter_by=filter_by,
+    )
+    total_pages = (total + size - 1) // size
+
+    return PaginatedResponse(
+        items=[CategoryResponse(id=category.id, title=category.title) for category in categories],
+        total=total,
+        page=page,
+        size=size,
+        total_pages=total_pages,
+    )
 
 
 @router.get(

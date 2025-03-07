@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar, List, TYPE_CHECKING
+from typing import Generic, TypeVar, List, TYPE_CHECKING, Optional
 
 from modules.base import BaseModel
 
@@ -13,7 +13,14 @@ class ICategoryRepository(ABC, Generic[ModelType]):
     model: ModelType
 
     @abstractmethod
-    async def find_all(self) -> "List[Category]":
+    async def find_all(
+        self,
+        limit: int,
+        offset: int,
+        filter_by: Optional[str] = None,
+        sort_by: Optional[str] = None,
+        sort_order: Optional[str] = None,
+    ) -> "List[Category]":
         raise NotImplementedError()
 
     @abstractmethod

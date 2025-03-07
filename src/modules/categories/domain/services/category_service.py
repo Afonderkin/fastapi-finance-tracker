@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from modules.categories.domain.entities import CategoryEntity
 
@@ -13,9 +13,23 @@ class CategoryService:
     ) -> None:
         self.repo = repo
 
-    async def get_all_categories(self) -> list[CategoryEntity]:
-        categories = [category.to_entity() for category in (await self.repo.find_all())]
-        return categories
+    async def get_all_categories(
+        self,
+        limit: int,
+        offset: int,
+        filter_by: Optional[str] = None,
+        sort_by: Optional[str] = None,
+        sort_order: Optional[str] = None,
+    ) -> list[CategoryEntity]:
+
+        categories, total = await self.repo.find_all(
+            limit=limit,
+            offset=offset,
+            filter_by=filter_by,
+            sort_by=sort_by,
+            sort_order=sort_order,
+        )
+        return categories, total
 
     async def get_category_by_id(self, category_id: int) -> CategoryEntity | None:
         category = await self.repo.find_by_id(category_id)

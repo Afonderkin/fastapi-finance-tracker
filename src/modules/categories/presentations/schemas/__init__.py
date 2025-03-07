@@ -5,7 +5,8 @@ __all__ = (
     "CategoryResponse",
     "SuccessCreateCategoryResponse",
     "SuccessUpdateCategoryResponse",
+    "PaginatedResponse",
 )
 
 from .categories import CategoryBase, CategoryCreate, CategoryUpdate, CategoryResponse
-from .responses import SuccessCreateCategoryResponse, SuccessUpdateCategoryResponse
+from .responses import SuccessCreateCategoryResponse, SuccessUpdateCategoryResponse, PaginatedResponse

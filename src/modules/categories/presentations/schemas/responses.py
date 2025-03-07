@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import BaseModel
 from modules.categories.presentations.schemas import CategoryResponse
 
@@ -13,3 +15,11 @@ class SuccessCreateCategoryResponse(BaseSuccessResponse):
 
 class SuccessUpdateCategoryResponse(BaseSuccessResponse):
     data: CategoryResponse
+
+
+class PaginatedResponse(BaseModel):
+    items: List[CategoryResponse]
+    total: int
+    page: int
+    size: int
+    total_pages: int
