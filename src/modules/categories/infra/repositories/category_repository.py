@@ -22,7 +22,7 @@ class CategoryRepository(ICategoryRepository[Category]):
         filter_by: Optional[str] = None,
         sort_by: Optional[str] = None,
         sort_order: Optional[str] = None,
-    ) -> List[Category]:
+    ) -> tuple[List[Category], int]:
         query = select(self.model)
 
         if filter_by:

@@ -20,7 +20,7 @@ class ICategoryRepository(ABC, Generic[ModelType]):
         filter_by: Optional[str] = None,
         sort_by: Optional[str] = None,
         sort_order: Optional[str] = None,
-    ) -> "List[Category]":
+    ) -> "tuple[List[Category], int]":
         raise NotImplementedError()
 
     @abstractmethod
