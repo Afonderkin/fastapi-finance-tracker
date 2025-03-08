@@ -59,6 +59,7 @@ class InMemoryBaseRepository(IBaseRepository[ModelType]):
     ) -> "tuple[List[ModelType], int]":
         query = select(self.model)
 
+        # TODO: сделать where гибким
         if filter_by:
             query = query.where(self.model.title == filter_by)
 

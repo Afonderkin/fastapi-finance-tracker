@@ -7,10 +7,9 @@ from modules.base import BaseEntity
 from modules.transactions.domain.value_objects import Description
 
 
-@dataclass
-class TransactionType(Enum):
-    INCOME: str = "Доход"
-    EXPENSE: str = "Расход"
+class TransactionType(str, Enum):
+    INCOME = "Доход"
+    EXPENSE = "Расход"
 
 
 @dataclass

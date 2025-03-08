@@ -1,7 +1,7 @@
 from typing import List
 
 from pydantic import BaseModel
-from modules.transactions.presentations.schemas import TransactionResponse
+from modules.transactions.presentations.schemas.transactions import TransactionResponse
 
 
 class BaseSuccessResponse(BaseModel):

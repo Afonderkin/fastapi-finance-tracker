@@ -10,7 +10,7 @@ from modules.transactions.presentations.schemas import (TransactionResponse, Tra
                                                         SuccessCreateTransactionResponse, PaginatedResponse,)
 
 router = APIRouter(
-    prefix=settings.api.v1.transport.prefix,
+    prefix=settings.api.v1.transactions_prefix,
     tags=["Транзакции"],
 )
 
@@ -51,7 +51,7 @@ async def get_transactions(
     transactions = [TransactionResponse(
         id=transaction.id,
         amount=transaction.amount,
-        description=transaction.description,
+        description=transaction.description.value,
         transaction_type=transaction.transaction_type,
         date=transaction.date,
         category_id=transaction.category_id,
@@ -95,7 +95,7 @@ async def get_transaction_by_id(
     return TransactionResponse(
         id=transaction.id,
         amount=transaction.amount,
-        description=transaction.description,
+        description=transaction.description.value,
         transaction_type=transaction.transaction_type,
         date=transaction.date,
         category_id=transaction.category_id,
@@ -137,14 +137,14 @@ async def create_transaction(
         data=TransactionResponse(
             id=new_transaction.id,
             amount=new_transaction.amount,
-            description=new_transaction.description,
+            description=new_transaction.description.value,
             transaction_type=new_transaction.transaction_type,
             date=new_transaction.date,
             category_id=new_transaction.category_id,
         )
     )
 
-
+# TODO: Доделать запрос
 @router.patch(
     path="/{transaction_id}",
     response_model=SuccessUpdateTransactionResponse,
@@ -180,7 +180,7 @@ async def update_transaction(
         data=TransactionResponse(
             id=transaction.id,
             amount=transaction.amount,
-            description=transaction.description,
+            description=transaction.description.value,
             transaction_type=transaction.transaction_type,
             date=transaction.date,
             category_id=transaction.category_id,

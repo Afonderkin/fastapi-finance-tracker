@@ -17,7 +17,7 @@ class Transaction(BaseModel):
     amount: Mapped[float] = mapped_column(nullable=False)
     description: Mapped[str] = mapped_column(nullable=True)
     transaction_type: Mapped[TransactionType] = mapped_column(Enum(TransactionType), nullable=False)
-    date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     category_id: Mapped[int] =  mapped_column(ForeignKey("categories.id"), nullable=False)
 
     category: Mapped["Category"] = relationship(back_populates="transactions")
