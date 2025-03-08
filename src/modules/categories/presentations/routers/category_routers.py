@@ -1,6 +1,6 @@
 from typing import Annotated, Optional
 
-from fastapi import APIRouter, Depends, status, Path, Response, Query
+from fastapi import APIRouter, Depends, status, Path, Query
 
 from core.config import settings
 from modules.categories.domain.services import CategoryService
@@ -48,10 +48,11 @@ async def get_categories(
         sort_order=sort_order,
         filter_by=filter_by,
     )
+    categories = [CategoryResponse(id=category.id, title=category.title.value) for category in categories]
     total_pages = (total + size - 1) // size
 
     return PaginatedResponse(
-        items=[CategoryResponse(id=category.id, title=category.title) for category in categories],
+        items=categories,
         total=total,
         page=page,
         size=size,
@@ -107,9 +108,9 @@ async def get_category_by_id(
 )
 async def create_category(
     category_service: Annotated[CategoryService, Depends(get_category_service)],
-    category: CategoryCreate
+    category_data: CategoryCreate
 ) -> SuccessCreateCategoryResponse:
-    new_category = await category_service.create_category(title=category.title)
+    new_category = await category_service.create_category(title=category_data.title)
     return SuccessCreateCategoryResponse(
         status="success",
         message="Категория успешно создана",
@@ -139,10 +140,10 @@ async def create_category(
 )
 async def update_category(
     category_service: Annotated[CategoryService, Depends(get_category_service)],
-    category: CategoryUpdate,
+    category_data: CategoryUpdate,
     category_id: int = Path(..., description="ID категории"),
 ) -> SuccessUpdateCategoryResponse:
-    category = await category_service.update_category_title(category_id, new_title=category.title)
+    category = await category_service.update_category_title(category_id, new_title=category_data.title)
     return SuccessUpdateCategoryResponse(
         status="success",
         message="Категория успешно изменена",

@@ -28,10 +28,6 @@ class ICategoryRepository(ABC, Generic[ModelType]):
         raise NotImplementedError()
 
     @abstractmethod
-    async def find_by_title(self, title: str) -> "Category | None":
-        raise NotImplementedError()
-
-    @abstractmethod
     async def exists_by_title(self, title) -> bool:
         raise NotImplementedError()
 

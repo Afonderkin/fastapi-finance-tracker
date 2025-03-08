@@ -1,9 +1,8 @@
-from typing import TYPE_CHECKING, Optional
-
-from modules.categories.domain.entities import CategoryEntity
+from typing import TYPE_CHECKING, Optional, List
 
 if TYPE_CHECKING:
     from modules.categories.domain.interfaces import ICategoryRepository
+    from modules.categories.domain.entities import CategoryEntity
 
 
 class CategoryService:
@@ -20,7 +19,7 @@ class CategoryService:
         filter_by: Optional[str] = None,
         sort_by: Optional[str] = None,
         sort_order: Optional[str] = None,
-    ) -> list[CategoryEntity]:
+    ) -> "tuple[List[CategoryEntity], int]":
 
         categories, total = await self.repo.find_all(
             limit=limit,
@@ -29,25 +28,19 @@ class CategoryService:
             sort_by=sort_by,
             sort_order=sort_order,
         )
-        return categories, total
+        return [category.to_entity() for category in categories], total
 
-    async def get_category_by_id(self, category_id: int) -> CategoryEntity | None:
+    async def get_category_by_id(self, category_id: int) -> "CategoryEntity | None":
         category = await self.repo.find_by_id(category_id)
         if category:
             return category.to_entity()
         return None
 
-    async def get_category_by_title(self, title: str) -> CategoryEntity | None:
-        category = await self.repo.find_by_title(title)
-        if category:
-            return category.to_entity()
-        return None
-
-    async def create_category(self, title: str) -> CategoryEntity:
+    async def create_category(self, title: str) -> "CategoryEntity":
         category = await self.repo.save(title=title)
         return category.to_entity()
 
-    async def update_category_title(self, category_id: int, new_title: str) -> CategoryEntity:
+    async def update_category_title(self, category_id: int, new_title: str) -> "CategoryEntity":
         category = await self.repo.update(category_id=category_id, new_title=new_title)
         return category.to_entity()
 

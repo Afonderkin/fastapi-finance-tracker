@@ -51,12 +51,10 @@ class CategoryRepository(ICategoryRepository[Category]):
     async def find_by_id(self, category_id: int) -> Category | None:
         stmt = select(self.model).where(self.model.id == category_id)
         result = await self.session.execute(stmt)
-        return result.scalar_one_or_none()
-
-    async def find_by_title(self, title: str) -> Category | None:
-        stmt = select(self.model).where(self.model.title == title)
-        result = await self.session.execute(stmt)
-        return result.scalar_one_or_none()
+        result = result.scalar_one_or_none()
+        if result:
+            return result
+        return None
 
     async def exists_by_title(self, title) -> bool:
         stmt = select(exists().where(self.model.title == title))
