@@ -2,8 +2,9 @@ from typing import TYPE_CHECKING, List, Optional
 
 from sqlalchemy import select, exists, update, delete, func
 
+from modules.base.exceptions import FieldDoesNotExist
 from modules.categories.domain.interfaces.category_repository_interface import ICategoryRepository
-from modules.categories.exceptions import CategoryAlreadyExistsException, CategoryNotFoundedException, FieldDoesNotExist
+from modules.categories.exceptions import CategoryAlreadyExistsException, CategoryNotFoundedException
 from modules.categories.infra.orms import Category
 
 if TYPE_CHECKING:

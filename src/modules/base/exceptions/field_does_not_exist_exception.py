@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from modules.base import BaseApplicationException
+from modules.base.exceptions import BaseApplicationException
 
 
 @dataclass(frozen=True, eq=False)
