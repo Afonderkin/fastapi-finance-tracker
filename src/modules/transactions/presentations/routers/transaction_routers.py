@@ -148,7 +148,7 @@ async def create_transaction(
         )
     )
 
-# TODO: Доделать запрос
+
 @router.patch(
     path="/{transaction_id}",
     response_model=SuccessUpdateTransactionResponse,
@@ -176,7 +176,7 @@ async def update_transaction(
 ) -> SuccessUpdateTransactionResponse:
     transaction = await transaction_service.update_transaction(
         transaction_id,
-        **transaction_data.model_dump(),
+        **transaction_data.model_dump(exclude_unset=True, exclude_none=True),
     )
     return SuccessUpdateTransactionResponse(
         status="success",
