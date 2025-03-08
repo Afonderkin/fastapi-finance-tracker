@@ -1,9 +1,11 @@
+from datetime import datetime
 from typing import TYPE_CHECKING, Optional, Dict, List
 
 from sqlalchemy import select, func
 
 from modules.base import InMemoryBaseRepository
 from modules.base.exceptions import FieldDoesNotExist
+from modules.transactions.domain.entities import TransactionType
 from modules.transactions.infra.orms import Transaction
 
 if TYPE_CHECKING:
@@ -56,3 +58,31 @@ class InMemoryTransactionRepository(InMemoryBaseRepository[Transaction]):
         transactions = transactions.scalars().all()
 
         return transactions, total
+
+    async def get_summary(
+        self,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
+    ) -> tuple[float, float]:
+        query_income = select(func.sum(self.model.amount)).where(
+            self.model.transaction_type == TransactionType.INCOME
+        )
+        query_expense = select(func.sum(self.model.amount)).where(
+            self.model.transaction_type == TransactionType.EXPENSE
+        )
+
+        if start_date:
+            query_income = query_income.where(self.model.date >= start_date)
+            query_expense = query_expense.where(self.model.date >= start_date)
+
+        if end_date:
+            query_income = query_income.where(self.model.date <= end_date)
+            query_expense = query_expense.where(self.model.date <= end_date)
+
+        income_result = await self.session.execute(query_income)
+        expense_result = await self.session.execute(query_expense)
+
+        total_income = income_result.scalar() or 0.0
+        total_expense = expense_result.scalar() or 0.0
+
+        return total_income, total_expense

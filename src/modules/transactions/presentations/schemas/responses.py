@@ -23,3 +23,8 @@ class PaginatedResponse(BaseModel):
     page: int
     size: int
     total_pages: int
+
+
+class SummaryResponse(BaseModel):
+    total_income: float
+    total_expense: float

@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Annotated, Optional, Tuple
 
 from fastapi import APIRouter, Depends, status, Path, Query
@@ -9,7 +10,7 @@ from modules.transactions.presentations.dependencies import get_transaction_serv
 from modules.transactions.presentations.schemas import (TransactionResponse, TransactionCreate,
                                                         TransactionUpdate, SuccessUpdateTransactionResponse,
                                                         SuccessCreateTransactionResponse, PaginatedResponse,
-                                                        TransactionFilter, )
+                                                        TransactionFilter, SummaryResponse, )
 
 router = APIRouter(
     prefix=settings.api.v1.transactions_prefix,
@@ -67,6 +68,32 @@ async def get_transactions(
         size=size,
         total_pages=total_pages,
     )
+
+
+@router.get(
+    path="/summary",
+    response_model=SummaryResponse,
+    summary="Получение общего суммарного дохода и расхода за период",
+    description="Возвращает общее суммарное дохода и расхода за период.",
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {
+            "description": "Пользователь не авторизован",
+        },
+        status.HTTP_403_FORBIDDEN: {
+            "description": "Пользователь не имеет права на эту операцию",
+        },
+        status.HTTP_500_INTERNAL_SERVER_ERROR: {
+            "description": "Внутренняя ошибка сервера",
+        },
+    }
+)
+async def get_summary(
+    transaction_service: Annotated[TransactionService, Depends(get_transaction_service)],
+    start_date: Optional[datetime] = Query(None, description="Начальная дата периода"),
+    end_date: Optional[datetime] = Query(None, description="Конечная дата периода"),
+) -> SummaryResponse:
+    total_income, total_expense = await transaction_service.get_summary(start_date, end_date)
+    return SummaryResponse(total_income=total_income, total_expense=total_expense)
 
 
 @router.get(

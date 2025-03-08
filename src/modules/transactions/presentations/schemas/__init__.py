@@ -7,12 +7,13 @@ __all__ = (
     "SuccessCreateTransactionResponse",
     "SuccessUpdateTransactionResponse",
     "PaginatedResponse",
+    "SummaryResponse",
 )
 
 from .responses import (
     SuccessCreateTransactionResponse,
     SuccessUpdateTransactionResponse,
-    PaginatedResponse,
+    PaginatedResponse, SummaryResponse,
 )
 from .transactions import (
     TransactionBase,
