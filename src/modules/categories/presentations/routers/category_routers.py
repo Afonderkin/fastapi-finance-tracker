@@ -174,6 +174,6 @@ async def update_category(
 async def delete_category(
     category_service: Annotated[CategoryService, Depends(get_category_service)],
     category_id: int = Path(..., description="ID категории"),
-):
+) -> None:
     await category_service.delete_category(category_id)
     return
