@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, List, Optional
 from sqlalchemy import select, exists, update, delete, func
 
 from modules.categories.domain.interfaces.category_repository_interface import ICategoryRepository
+from modules.categories.exceptions import CategoryAlreadyExistsException, CategoryNotFoundedException, FieldDoesNotExist
 from modules.categories.infra.orms import Category
 
 if TYPE_CHECKING:
@@ -36,7 +37,7 @@ class CategoryRepository(ICategoryRepository[Category]):
                 elif sort_order == "desc":
                     query = query.order_by(field.desc())
             else:
-                raise ValueError(f"Поле {sort_by} не существует в модели")
+                raise FieldDoesNotExist(sort_by)
 
         total_query = query.with_only_columns(func.count(self.model.id)).order_by(None)
         total = await self.session.execute(total_query)
@@ -63,7 +64,7 @@ class CategoryRepository(ICategoryRepository[Category]):
 
     async def save(self, title: str) -> Category:
         if await self.exists_by_title(title):
-            raise ValueError(f"Category with title {title} already exists.")
+            raise CategoryAlreadyExistsException(title)
         new_category = self.model(title=title)
         self.session.add(new_category)
         await self.session.commit()
@@ -83,7 +84,7 @@ class CategoryRepository(ICategoryRepository[Category]):
     async def delete(self, category_id: int) -> None:
         category = await self.find_by_id(category_id)
         if not category:
-            raise ValueError(f"Category with id {category_id} not found.")
+            raise CategoryNotFoundedException(f"{category_id}")
         stmt = delete(self.model).where(self.model.id == category_id)
         await self.session.execute(stmt)
         await self.session.commit()
