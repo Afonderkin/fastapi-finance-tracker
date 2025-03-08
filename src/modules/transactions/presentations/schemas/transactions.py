@@ -41,3 +41,18 @@ class TransactionFilter(BaseModel):
         description="Фильтрация транзакции по типу транзакции",
         examples=["Доход", "Расход"]
     )
+    category_id: Optional[int] = Field(
+        default=None,
+        description="Фильтрация транзакции по идентификатору категории",
+        examples=[1, 2]
+    )
+    start_date: Optional[datetime] = Field(
+        default=None,
+        description="Фильтрация по начальной дате",
+        examples=["2023-01-01T00:00:00"]
+    )
+    end_date: Optional[datetime] = Field(
+        default=None,
+        description="Фильтрация по конечной дате",
+        examples=["2023-12-31T23:59:59"]
+    )

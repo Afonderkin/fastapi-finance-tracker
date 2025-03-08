@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from modules.base.exceptions import BaseApplicationException
 
 
-@dataclass(frozen=True, eq=False)
+@dataclass(eq=False)
 class ValidateException(BaseApplicationException):
     text: str
 

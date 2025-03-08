@@ -29,4 +29,4 @@ downgrade:
 
 #uvicorn
 app-run:
-    cd src; uvicorn main:create_app --host 0.0.0.0 --port 8000 --reload
+    cd src; uvicorn main:create_app --host 0.0.0.0 --port 8000 --reload --workers 1

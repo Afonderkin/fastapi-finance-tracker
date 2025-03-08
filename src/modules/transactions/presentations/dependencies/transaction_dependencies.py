@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Annotated, Optional
 
 from fastapi import Depends, Query
@@ -25,7 +26,22 @@ def get_transaction_service(
 
 async def get_filter_by(
     transaction_type: Optional[TransactionType] = Query(None, description="Фильтр по типу транзакции"),
+    category_id: Optional[int] = Query(None, description="Фильтр по категории транзакции"),
+    start_date: Optional[datetime] = Query(None, description="Фильтр по начальной дате",
+                                           example="2023-01-01T00:00:00"),
+    end_date: Optional[datetime] = Query(None, description="Фильтр по конечной дате",
+                                         example="2023-01-01T00:00:00"),
 ) -> Optional[TransactionFilter]:
+    filter_params = {}
     if transaction_type:
-        return TransactionFilter(transaction_type=transaction_type)
+        filter_params["transaction_type"] = transaction_type
+    if category_id:
+        filter_params["category_id"] = category_id
+    if start_date:
+        filter_params["start_date"] = start_date
+    if end_date:
+        filter_params["end_date"] = end_date
+
+    if filter_params:
+        return TransactionFilter(**filter_params)
     return None
