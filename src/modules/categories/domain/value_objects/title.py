@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 
 from modules.base import BaseValueObject
@@ -14,7 +15,7 @@ class Title(BaseValueObject[str]):
     def _validate_title(title) -> None:
         if not title:
             raise ValueError("Title cannot be empty")
-        if not title.isalpha():
-            raise ValueError("Title must only contain alphabetic characters")
+        if not re.match(r'^[A-Za-zА-Яа-я\s]+$', title):
+            raise ValueError("Title must only contain alphabetic characters (Latin, Cyrillic) and spaces")
         if len(title) > 100:
             raise ValueError("Title cannot exceed 100 characters")
