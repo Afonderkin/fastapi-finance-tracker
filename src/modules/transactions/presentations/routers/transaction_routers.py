@@ -1,8 +1,9 @@
-from typing import Annotated, Optional
+from typing import Annotated, Optional, Tuple
 
 from fastapi import APIRouter, Depends, status, Path, Query
 
 from core.config import settings
+from modules.base.dependencies import pagination_and_sort_params
 from modules.transactions.domain.services import TransactionService
 from modules.transactions.presentations.dependencies import get_transaction_service, get_filter_by
 from modules.transactions.presentations.schemas import (TransactionResponse, TransactionCreate,
@@ -35,13 +36,10 @@ router = APIRouter(
 )
 async def get_transactions(
     transaction_service: Annotated[TransactionService, Depends(get_transaction_service)],
-    page: int = Query(1, description="Номер страницы", ge=1),
-    size: int = Query(10, description="Количество элементов на странице", ge=1, le=10),
-    sort_by: Optional[str] = Query(None, description="Поле для сортировки"),
-    sort_order: Optional[str] = Query(None, description="Порядок сортировки (asc или desc)"),
+    pagination: Tuple[int, int, int, Optional[str], Optional[str]] = Depends(pagination_and_sort_params),
     filter_by: Optional[TransactionFilter] = Depends(get_filter_by),
 ) -> PaginatedResponse:
-    offset = (page - 1) * size
+    page, offset, size, sort_by, sort_order = pagination
 
     filter_dict = filter_by.model_dump(exclude_none=True) if filter_by else {}
 
