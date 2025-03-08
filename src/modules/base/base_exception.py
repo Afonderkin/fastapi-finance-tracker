@@ -9,6 +9,3 @@ class BaseApplicationException(Exception):
 
     def __str__(self):
         return self.message
-
-if 1 == 1:
-    raise BaseApplicationException()

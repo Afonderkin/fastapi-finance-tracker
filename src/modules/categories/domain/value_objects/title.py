@@ -2,6 +2,7 @@ import re
 from dataclasses import dataclass
 
 from modules.base import BaseValueObject
+from modules.categories.exceptions import TitleValidateException
 
 
 @dataclass
@@ -14,8 +15,8 @@ class Title(BaseValueObject[str]):
     @staticmethod
     def _validate_title(title) -> None:
         if not title:
-            raise ValueError("Title cannot be empty")
+            raise TitleValidateException("Заголовок не может быть пустым")
         if not re.match(r'^[A-Za-zА-Яа-я\s]+$', title):
-            raise ValueError("Title must only contain alphabetic characters (Latin, Cyrillic) and spaces")
+            raise TitleValidateException("Заголовок должен содержать только буквы (латиницу, кириллицу) и пробелы")
         if len(title) > 100:
-            raise ValueError("Title cannot exceed 100 characters")
+            raise TitleValidateException("Заголовок не должен превышать 100 символов")
