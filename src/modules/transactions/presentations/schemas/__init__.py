@@ -3,6 +3,7 @@ __all__ = (
     "TransactionCreate",
     "TransactionUpdate",
     "TransactionResponse",
+    "TransactionFilter",
     "SuccessCreateTransactionResponse",
     "SuccessUpdateTransactionResponse",
     "PaginatedResponse",
@@ -18,4 +19,5 @@ from .transactions import (
     TransactionCreate,
     TransactionUpdate,
     TransactionResponse,
+    TransactionFilter,
 )

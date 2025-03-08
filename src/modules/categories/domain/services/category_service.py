@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING, Optional, List, Dict
 
 from modules.categories.exceptions import CategoryAlreadyExistsException
 
@@ -18,7 +18,7 @@ class CategoryService:
         self,
         limit: int,
         offset: int,
-        filter_by: Optional[str] = None,
+        filter_by: Optional[Dict[str, any]] = None,
         sort_by: Optional[str] = None,
         sort_order: Optional[str] = None,
     ) -> "tuple[List[CategoryEntity], int]":

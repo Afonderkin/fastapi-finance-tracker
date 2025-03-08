@@ -4,10 +4,11 @@ from fastapi import APIRouter, Depends, status, Path, Query
 
 from core.config import settings
 from modules.categories.domain.services import CategoryService
-from modules.categories.presentations.dependencies import get_category_service
+from modules.categories.presentations.dependencies import get_category_service, get_filter_by
 from modules.categories.presentations.schemas import (CategoryResponse, CategoryCreate,
                                                       CategoryUpdate, SuccessUpdateCategoryResponse,
-                                                      SuccessCreateCategoryResponse, PaginatedResponse, )
+                                                      SuccessCreateCategoryResponse, PaginatedResponse,
+                                                      CategoryFilter, )
 
 router = APIRouter(
     prefix=settings.api.v1.categories_prefix,
@@ -38,15 +39,18 @@ async def get_categories(
     size: int = Query(10, description="Количество элементов на странице", ge=1, le=10),
     sort_by: Optional[str] = Query(None, description="Поле для сортировки"),
     sort_order: Optional[str] = Query(None, description="Порядок сортировки (asc или desc)"),
-    filter_by: Optional[str] = Query(None, description="Фильтр по полю"),
+    filter_by: Optional[CategoryFilter] = Depends(get_filter_by),
 ) -> PaginatedResponse:
     offset = (page - 1) * size
+
+    filter_dict = filter_by.model_dump(exclude_none=True) if filter_by else {}
+
     categories, total = await category_service.get_all_categories(
         offset=offset,
         limit=size,
         sort_by=sort_by,
         sort_order=sort_order,
-        filter_by=filter_by,
+        filter_by=filter_dict,
     )
     categories = [CategoryResponse(id=category.id, title=category.title.value) for category in categories]
     total_pages = (total + size - 1) // size

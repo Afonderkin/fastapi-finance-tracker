@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING, Optional, List, Dict
 
 if TYPE_CHECKING:
     from modules.transactions.domain.entities import TransactionEntity
@@ -14,7 +14,7 @@ class TransactionService:
         self,
         limit: int,
         offset: int,
-        filter_by: Optional[str] = None,
+        filter_by: Optional[Dict[str, any]] = None,
         sort_by: Optional[str] = None,
         sort_order: Optional[str] = None,
     ) -> "tuple[List[TransactionEntity], int]":

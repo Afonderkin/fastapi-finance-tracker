@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar, List, Optional, TYPE_CHECKING
+from typing import Generic, TypeVar, List, Optional, TYPE_CHECKING, Dict
 
 from sqlalchemy import select, func, update, delete
 
@@ -53,15 +53,18 @@ class InMemoryBaseRepository(IBaseRepository[ModelType]):
         self,
         limit: int,
         offset: int,
-        filter_by: Optional[str] = None,
+        filter_by: Optional[Dict[str, any]] = None,
         sort_by: Optional[str] = None,
         sort_order: Optional[str] = None,
     ) -> "tuple[List[ModelType], int]":
         query = select(self.model)
 
-        # TODO: сделать where гибким
         if filter_by:
-            query = query.where(self.model.title == filter_by)
+            for field, value in filter_by.items():
+                if hasattr(self.model, field):
+                    query = query.where(getattr(self.model, field) == value)
+                else:
+                    raise FieldDoesNotExist(field)
 
         if sort_by and sort_order:
             if hasattr(self.model, sort_by):

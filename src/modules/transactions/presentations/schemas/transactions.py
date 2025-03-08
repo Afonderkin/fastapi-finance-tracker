@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from modules.transactions.domain.entities import TransactionType
 
@@ -33,3 +33,11 @@ class TransactionUpdate(BaseModel):
     transaction_type: Optional[TransactionType] = None
     date: Optional[datetime] = None
     category_id: Optional[int] = None
+
+
+class TransactionFilter(BaseModel):
+    transaction_type: Optional[TransactionType] = Field(
+        default=None,
+        description="Фильтрация транзакции по типу транзакции",
+        examples=["Доход", "Расход"]
+    )

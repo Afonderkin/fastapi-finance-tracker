@@ -4,10 +4,11 @@ from fastapi import APIRouter, Depends, status, Path, Query
 
 from core.config import settings
 from modules.transactions.domain.services import TransactionService
-from modules.transactions.presentations.dependencies import get_transaction_service
+from modules.transactions.presentations.dependencies import get_transaction_service, get_filter_by
 from modules.transactions.presentations.schemas import (TransactionResponse, TransactionCreate,
                                                         TransactionUpdate, SuccessUpdateTransactionResponse,
-                                                        SuccessCreateTransactionResponse, PaginatedResponse,)
+                                                        SuccessCreateTransactionResponse, PaginatedResponse,
+                                                        TransactionFilter, )
 
 router = APIRouter(
     prefix=settings.api.v1.transactions_prefix,
@@ -38,15 +39,18 @@ async def get_transactions(
     size: int = Query(10, description="Количество элементов на странице", ge=1, le=10),
     sort_by: Optional[str] = Query(None, description="Поле для сортировки"),
     sort_order: Optional[str] = Query(None, description="Порядок сортировки (asc или desc)"),
-    filter_by: Optional[str] = Query(None, description="Фильтр по полю"),
+    filter_by: Optional[TransactionFilter] = Depends(get_filter_by),
 ) -> PaginatedResponse:
     offset = (page - 1) * size
+
+    filter_dict = filter_by.model_dump(exclude_none=True) if filter_by else {}
+
     transactions, total = await transaction_service.get_all_transactions(
         offset=offset,
         limit=size,
         sort_by=sort_by,
         sort_order=sort_order,
-        filter_by=filter_by,
+        filter_by=filter_dict,
     )
     transactions = [TransactionResponse(
         id=transaction.id,
