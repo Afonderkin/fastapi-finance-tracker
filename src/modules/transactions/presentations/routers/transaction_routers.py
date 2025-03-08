@@ -45,7 +45,7 @@ async def get_transactions(
 
     filter_dict = filter_by.model_dump(exclude_none=True) if filter_by else {}
 
-    transactions, total = await transaction_service.get_all_transactions(
+    transactions, total = await transaction_service.get_all(
         offset=offset,
         limit=size,
         sort_by=sort_by,
@@ -95,7 +95,7 @@ async def get_transaction_by_id(
     transaction_service: Annotated[TransactionService, Depends(get_transaction_service)],
     transaction_id: int = Path(..., description="ID транзакции"),
 ) -> TransactionResponse:
-    transaction = await transaction_service.get_transaction_by_id(transaction_id)
+    transaction = await transaction_service.get_by_id(transaction_id)
     return TransactionResponse(
         id=transaction.id,
         amount=transaction.amount,
@@ -128,7 +128,7 @@ async def create_transaction(
     transaction_service: Annotated[TransactionService, Depends(get_transaction_service)],
     transaction_data: TransactionCreate,
 ) -> SuccessCreateTransactionResponse:
-    new_transaction = await transaction_service.create_transaction(
+    new_transaction = await transaction_service.create(
         amount=transaction_data.amount,
         description=transaction_data.description,
         transaction_type=transaction_data.transaction_type,
@@ -174,7 +174,7 @@ async def update_transaction(
     transaction_data: TransactionUpdate,
     transaction_id: int = Path(..., description="ID транзакции"),
 ) -> SuccessUpdateTransactionResponse:
-    transaction = await transaction_service.update_transaction(
+    transaction = await transaction_service.update(
         transaction_id,
         **transaction_data.model_dump(exclude_unset=True, exclude_none=True),
     )
@@ -216,5 +216,5 @@ async def delete_transaction(
     transaction_service: Annotated[TransactionService, Depends(get_transaction_service)],
     transaction_id: int = Path(..., description="ID транзакции"),
 ) -> None:
-    await transaction_service.delete_transaction(transaction_id)
+    await transaction_service.delete(transaction_id)
     return

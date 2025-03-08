@@ -1,9 +1,10 @@
 from typing import Annotated, Optional
 
-from fastapi import APIRouter, Depends, status, Path, Query
+from fastapi import APIRouter, Depends, status, Path, Query, HTTPException
 
 from core.config import settings
 from modules.categories.domain.services import CategoryService
+from modules.categories.exceptions import CategoryAlreadyExistsException
 from modules.categories.presentations.dependencies import get_category_service, get_filter_by
 from modules.categories.presentations.schemas import (CategoryResponse, CategoryCreate,
                                                       CategoryUpdate, SuccessUpdateCategoryResponse,
@@ -45,7 +46,7 @@ async def get_categories(
 
     filter_dict = filter_by.model_dump(exclude_none=True) if filter_by else {}
 
-    categories, total = await category_service.get_all_categories(
+    categories, total = await category_service.get_all(
         offset=offset,
         limit=size,
         sort_by=sort_by,
@@ -88,7 +89,7 @@ async def get_category_by_id(
     category_service: Annotated[CategoryService, Depends(get_category_service)],
     category_id: int = Path(..., description="ID категории"),
 ) -> CategoryResponse:
-    category = await category_service.get_category_by_id(category_id)
+    category = await category_service.get_by_id(category_id)
     return CategoryResponse(id=category.id, title=category.title.value)
 
 
@@ -105,6 +106,9 @@ async def get_category_by_id(
         status.HTTP_403_FORBIDDEN: {
             "description": "Пользователь не имеет права на эту операцию",
         },
+        status.HTTP_409_CONFLICT: {
+            "description": "Категория с таким названием уже существует",
+        },
         status.HTTP_500_INTERNAL_SERVER_ERROR: {
             "description": "Внутренняя ошибка сервера",
         },
@@ -114,7 +118,15 @@ async def create_category(
     category_service: Annotated[CategoryService, Depends(get_category_service)],
     category_data: CategoryCreate
 ) -> SuccessCreateCategoryResponse:
-    new_category = await category_service.create_category(title=category_data.title)
+    try:
+        if await category_service.exists_by_title(category_data.title):
+            raise CategoryAlreadyExistsException(f"Категория с названием '{category_data.title}' уже существует")
+    except CategoryAlreadyExistsException as e:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=e.message
+        )
+    new_category = await category_service.create(title=category_data.title)
     return SuccessCreateCategoryResponse(
         status="success",
         message="Категория успешно создана",
@@ -147,7 +159,7 @@ async def update_category(
     category_data: CategoryUpdate,
     category_id: int = Path(..., description="ID категории"),
 ) -> SuccessUpdateCategoryResponse:
-    category = await category_service.update_category_title(category_id, new_title=category_data.title)
+    category = await category_service.update(category_id, title=category_data.title)
     return SuccessUpdateCategoryResponse(
         status="success",
         message="Категория успешно изменена",
@@ -179,5 +191,5 @@ async def delete_category(
     category_service: Annotated[CategoryService, Depends(get_category_service)],
     category_id: int = Path(..., description="ID категории"),
 ) -> None:
-    await category_service.delete_category(category_id)
+    await category_service.delete(category_id)
     return
