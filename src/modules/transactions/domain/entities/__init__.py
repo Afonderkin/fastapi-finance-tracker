@@ -1,3 +1,9 @@
-__all__ = ("TransactionEntity",)
+__all__ = (
+    "TransactionEntity",
+    "TransactionType",
+)
 
-from modules.transactions.domain.entities.transactions import TransactionEntity
+from modules.transactions.domain.entities.transactions import (
+    TransactionEntity,
+    TransactionType,
+)
