@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING, Optional, List
 
+from modules.categories.exceptions import CategoryAlreadyExistsException
+
 if TYPE_CHECKING:
     from modules.categories.domain.interfaces import ICategoryRepository
     from modules.categories.domain.entities import CategoryEntity
@@ -37,12 +39,14 @@ class CategoryService:
         return None
 
     async def create_category(self, title: str) -> "CategoryEntity":
+        if await self.repo.exists_by_title(title):
+            raise CategoryAlreadyExistsException(title)
         category = await self.repo.save(title=title)
         return category.to_entity()
 
     async def update_category_title(self, category_id: int, new_title: str) -> "CategoryEntity":
-        category = await self.repo.update(category_id=category_id, new_title=new_title)
+        category = await self.repo.update(category_id, title=new_title)
         return category.to_entity()
 
     async def delete_category(self, category_id: int) -> None:
-        await self.repo.delete(category_id=category_id)
+        await self.repo.delete(category_id)

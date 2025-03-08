@@ -1,3 +1,3 @@
-__all__ = ("CategoryRepository",)
+__all__ = ("InMemoryCategoryRepository",)
 
-from modules.categories.infra.repositories.category_repository import CategoryRepository
+from modules.categories.infra.repositories.category_repository import InMemoryCategoryRepository
