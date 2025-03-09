@@ -11,17 +11,19 @@
 
 ---
 
-## 🛠️ **Стек технологий**
-| Технология      | Версия  | Описание |
-|----------------|---------|----------|
-| 🐍 **Python**  | 3.13    | Язык программирования |
-| ⚡ **FastAPI** | 0.115.11 | Веб-фреймворк |
-| 🔥 **Uvicorn** | 0.34.0  | ASGI-сервер |
-| 🗄️ **PostgreSQL** | 16 | База данных |
-| 🏗️ **SQLAlchemy** | 2.0.38 | ORM |
-| 🔄 **Alembic** | 1.15.1 | Миграции БД |
-| 🐳 **Docker**  | latest  | Контейнеризация |
-| 🎭 **Pytest**  | 8.1.1  | Тестирование |
+## 🛠️ Стек технологий
+
+| Технология   | Иконка  | Версия  | Описание |
+|-------------|--------|---------|----------|
+| Python      | ![Python](https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg) | 3.13 | Язык программирования |
+| FastAPI     | ![FastAPI](https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg) | 0.115.11 | Веб-фреймворк |
+| Uvicorn     | ![Uvicorn](assets/uvicorn.svg) | 0.34.0 | ASGI-сервер |
+| PostgreSQL  | ![PostgreSQL](https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg) | 16 | База данных |
+| SQLAlchemy  | ![SQLAlchemy](https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlalchemy/sqlalchemy-original.svg) | 2.0.38 | ORM |
+| Alembic     | ![Alembic](assets/alembic.svg) | 1.15.1 | Миграции БД |
+| Docker      | ![Docker](https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg) | latest | Контейнеризация |
+| Pytest      | 🧪 | 8.1.1 | Тестирование |
+
 
 ---
 
