@@ -7,7 +7,7 @@ from modules.categories.domain.entities import CategoryEntity
 from modules.categories.domain.value_objects import Title
 
 if TYPE_CHECKING:
-    from modules.transactions.infra.orms import Transaction
+    from modules.transactions.infra.orms import Transaction, Budget
 
 
 class Category(BaseModel):
@@ -17,6 +17,7 @@ class Category(BaseModel):
     title: Mapped[str] = mapped_column(unique=True, nullable=False)
 
     transactions: Mapped[list["Transaction"]] = relationship(back_populates="category")
+    budgets: Mapped[list["Budget"]] = relationship(back_populates="category")
 
     def to_entity(self):
         return CategoryEntity(

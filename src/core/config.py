@@ -22,6 +22,7 @@ class ApiV1PrefixConfig(BaseModel):
     categories_prefix: str = "/categories"
     transactions_prefix: str = "/transactions"
     reports_prefix: str = "/reports"
+    budgets_prefix: str = "/budgets"
 
 
 class ApiPrefixConfig(BaseModel):

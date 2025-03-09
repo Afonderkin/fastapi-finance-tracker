@@ -7,8 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import db_helper
 from modules.transactions.domain.entities import TransactionType
 from modules.transactions.domain.interfaces import ITransactionRepository
-from modules.transactions.domain.services import TransactionService
+from modules.transactions.domain.services import TransactionService, BudgetService
 from modules.transactions.infra.repositories import InMemoryTransactionRepository
+from modules.transactions.presentations.dependencies.budget_dependencies import get_budget_service
 from modules.transactions.presentations.schemas.transactions import TransactionFilter
 
 
@@ -19,9 +20,10 @@ def get_transaction_repository(
 
 
 def get_transaction_service(
-    transaction_repository: Annotated[ITransactionRepository, Depends(get_transaction_repository)]
+    transaction_repository: Annotated[ITransactionRepository, Depends(get_transaction_repository)],
+    budget_service: Annotated[BudgetService, Depends(get_budget_service)],
 ) -> TransactionService:
-    return TransactionService(transaction_repository)
+    return TransactionService(transaction_repository, budget_service)
 
 
 async def get_filter_by(

@@ -1,10 +1,11 @@
 from typing import Annotated, Optional, Tuple
 
-from fastapi import APIRouter, Depends, status, Path
+from fastapi import APIRouter, Depends, status, Path, HTTPException
 
 from core.config import settings
 from modules.base.dependencies import pagination_and_sort_params
 from modules.transactions.domain.services import TransactionService
+from modules.transactions.exceptions import BudgetLimitExceededException
 from modules.transactions.presentations.dependencies import get_transaction_service, get_filter_by
 from modules.transactions.presentations.schemas import (TransactionResponse, TransactionCreate,
                                                         TransactionUpdate, SuccessUpdateTransactionResponse,
@@ -115,7 +116,7 @@ async def get_transaction_by_id(
             "description": "Пользователь не авторизован",
         },
         status.HTTP_403_FORBIDDEN: {
-            "description": "Пользователь не имеет права на эту операцию",
+            "description": "Превышен лимит бюджета по категории",
         },
         status.HTTP_500_INTERNAL_SERVER_ERROR: {
             "description": "Внутренняя ошибка сервера",
@@ -126,13 +127,19 @@ async def create_transaction(
     transaction_service: Annotated[TransactionService, Depends(get_transaction_service)],
     transaction_data: TransactionCreate,
 ) -> SuccessCreateTransactionResponse:
-    new_transaction = await transaction_service.create(
-        amount=transaction_data.amount,
-        description=transaction_data.description,
-        transaction_type=transaction_data.transaction_type,
-        date=transaction_data.date,
-        category_id=transaction_data.category_id,
-    )
+    try:
+        new_transaction = await transaction_service.create(
+            amount=transaction_data.amount,
+            description=transaction_data.description,
+            transaction_type=transaction_data.transaction_type,
+            date=transaction_data.date,
+            category_id=transaction_data.category_id,
+        )
+    except BudgetLimitExceededException as e:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=e.message,
+        )
     return SuccessCreateTransactionResponse(
         status="success",
         message="Транзакция успешно создана",
