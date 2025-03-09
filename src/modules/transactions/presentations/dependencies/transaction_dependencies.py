@@ -19,9 +19,9 @@ def get_transaction_repository(
 
 
 def get_transaction_service(
-    category_repository: Annotated[ITransactionRepository, Depends(get_transaction_repository)]
+    transaction_repository: Annotated[ITransactionRepository, Depends(get_transaction_repository)]
 ) -> TransactionService:
-    return TransactionService(category_repository)
+    return TransactionService(transaction_repository)
 
 
 async def get_filter_by(
