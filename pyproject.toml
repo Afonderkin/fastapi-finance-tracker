@@ -1,5 +1,9 @@
 [tool.poetry]
 package-mode=false
+version = "0.5.0"
+description = "Приложение для управления финансами"
+authors = ["Afonderkin Stanislav"]
+license = "MIT"
 
 [tool.poetry.dependencies]
 python="^3.13"

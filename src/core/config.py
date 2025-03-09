@@ -11,7 +11,7 @@ class RunConfig(BaseModel):
     title: str = "fastapi-finance-tracker"
     description: str = ("Финансовый трекер, где вы можете отслеживать доходы и расходы, планировать свой бюджет и "
                         "просматривать отчеты о доходах и расходах.")
-    version: str = "0.1.0"
+    version: str = "0.5.0"
     host: str = "0.0.0.0"
     port: int = 8000
     url: str = "http://localhost:8000/api/v1"
