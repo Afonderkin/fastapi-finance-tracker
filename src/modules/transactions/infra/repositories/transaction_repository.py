@@ -1,10 +1,11 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional, Dict, List
 
-from sqlalchemy import select, func
+from sqlalchemy import select, func, and_
 
 from modules.base import InMemoryBaseRepository
 from modules.base.exceptions import FieldDoesNotExist
+from modules.categories.infra.orms import Category
 from modules.transactions.domain.entities import TransactionType
 from modules.transactions.infra.orms import Transaction
 
@@ -86,3 +87,28 @@ class InMemoryTransactionRepository(InMemoryBaseRepository[Transaction]):
         total_expense = expense_result.scalar() or 0.0
 
         return total_income, total_expense
+
+    async def get_expenses_by_category(
+        self,
+        start_date: datetime,
+        end_date: datetime,
+    ) -> List[tuple[str, float]]:
+        query = (
+            select(
+                Category.title.label("category_title"),
+                func.sum(self.model.amount).label("total_expenses")
+            )
+            .join(Category, self.model.category_id == Category.id)
+            .where(
+                and_(
+                    self.model.transaction_type == TransactionType.EXPENSE,
+                    self.model.date >= start_date,
+                    self.model.date < end_date,
+                )
+            )
+            .group_by(Category.title)
+            .order_by(func.sum(self.model.amount).desc())
+        )
+
+        result = await self.session.execute(query)
+        return result.all()

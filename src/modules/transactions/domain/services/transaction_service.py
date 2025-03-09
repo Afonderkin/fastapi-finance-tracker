@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, List
 
 from modules.base import BaseService
 from modules.transactions.domain.entities import TransactionEntity
@@ -19,3 +19,11 @@ class TransactionService(BaseService[TransactionEntity]):
     ) -> tuple[float, float]:
         total_income, total_expense = await self.repo.get_summary(start_date, end_date)
         return total_income, total_expense
+
+    async def get_expenses_by_category(
+        self,
+        start_date: datetime,
+        end_date: datetime,
+    ) -> List[tuple[str, float]]:
+        expenses = await self.repo.get_expenses_by_category(start_date, end_date)
+        return expenses

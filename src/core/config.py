@@ -21,6 +21,7 @@ class ApiV1PrefixConfig(BaseModel):
     prefix: str = "/v1"
     categories_prefix: str = "/categories"
     transactions_prefix: str = "/transactions"
+    reports_prefix: str = "/reports"
 
 
 class ApiPrefixConfig(BaseModel):

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import TypeVar, Optional
+from typing import TypeVar, Optional, List
 
 from modules.base import BaseModel, IBaseRepository
 
@@ -18,3 +18,10 @@ class ITransactionRepository(IBaseRepository[ModelType], ABC):
     ) -> tuple[float, float]:
         raise NotImplementedError()
 
+    @abstractmethod
+    async def get_expenses_by_category(
+        self,
+        start_date: datetime,
+        end_date: datetime,
+    ) -> List[tuple[str, float]]:
+        raise NotImplementedError()

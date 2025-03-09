@@ -28,3 +28,8 @@ class PaginatedResponse(BaseModel):
 class SummaryResponse(BaseModel):
     total_income: float
     total_expense: float
+
+
+class ExpensesByCategoryResponse(BaseModel):
+    category: str
+    total_expense: float
